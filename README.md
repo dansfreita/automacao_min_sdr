@@ -2,7 +2,7 @@
 
 Este repositório contém a arquitetura e os fluxos lógicos de um agente de prospecção autônoma (SDR) focado em operações B2B. O sistema orquestra a mineração de dados, enriquecimento de contexto e negociação persuasiva utilizando Inteligência Artificial Generativa e ferramentas Low-Code.
 
-Projeto desenvolvido como Trabalho de Conclusão de Curso (Engenharia Mecânica) visando democratizar o acesso a operações de *Outbound Marketing* para micro e pequenas empresas com custo marginal quase nulo.
+Projeto desenvolvido como Trabalho de Conclusão de Curso (Engenharia da Computação) visando colaborar com o acesso a operações de *Outbound Marketing* para micro e pequenas empresas com baixo custo marginal.
 
 ## Stack Tecnológico
 
