@@ -1,0 +1,440 @@
+{
+  "name": "Disparador",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const limite = 5;\n\nreturn items.slice(0, limite);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -208
+      ],
+      "id": "2d2ffc8a-305f-4933-8f87-b0a5dd3774e9",
+      "name": "Limitador"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.delay }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        928,
+        -208
+      ],
+      "id": "cd14da2d-e849-488e-8710-14731d169848",
+      "name": "Wait",
+      "webhookId": "b5f941ba-3b41-40a3-9067-ed4712248738"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const min = 20;\n  const max = 45;\n  const delay = Math.floor(Math.random() * (max - min + 1)) + min;\n\n  return {\n    json: {\n      ...item.json,\n      delay\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -208
+      ],
+      "id": "d9774a54-574b-4365-9657-5e933ec12892",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "mensagem_enviada",
+            "data_ultimo_disparo": "={{ $('Code1').item.json.data_ultimo_disparo }}",
+            "Telefone": "={{ $('Code1').item.json.Telefone }}",
+            "variacao_mensagem": "={{ $('Code1').item.json.variacao }}"
+          },
+          "matchingColumns": [
+            "Telefone"
+          ],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Telefone",
+              "displayName": "Telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nicho",
+              "displayName": "Nicho",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "data_ultimo_disparo",
+              "displayName": "data_ultimo_disparo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "última_mensagem_enviada",
+              "displayName": "última_mensagem_enviada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "data_último_contato\n",
+              "displayName": "data_último_contato\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "variacao_mensagem",
+              "displayName": "variacao_mensagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Observações",
+              "displayName": "Observações",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1376,
+        -208
+      ],
+      "id": "45b91294-1acd-4b9a-8b7e-9e288f90b685",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "phgIAttB7EdXhB2O",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "production",
+        "remoteJid": "=+{{ $json.Telefone }}",
+        "messageText": "={{ $json.mensagem }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        -208
+      ],
+      "id": "e9369d18-197d-4f2f-9968-71d433313197",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "D9nAqfNlRE7L2eeP",
+          "name": "Evolution account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const nome = item.json.Nome || \"cliente\";\n  const nicho = item.json.Nicho || \"seu negócio\";\n  const telefoneNumerico = item.json.Telefone.replace(/\\D/g, '');\n  const jid = `${telefoneNumerico}@s.whatsapp.net`;\n\n  // Mensagens para teste A/B/C/D\n  const mensagens = [$input.first().json.variacao_mensagem\n  ];\n\n  const index = Math.floor(Math.random() * mensagens.length);\n  const mensagem = mensagens[index];\n\n  const dataDisparo = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });\n\n  return {\n    json: {\n      ...item.json,\n      mensagem,\n      jid,\n      variacao: mensagem, // Agora salva o texto da mensagem em vez do ID\n      data_ultimo_disparo: dataDisparo\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -208
+      ],
+      "id": "e611eaca-9fbd-41b6-8e1f-637b97697f41",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "pendente"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -192,
+        -144
+      ],
+      "id": "c635f1e0-93ca-41db-bf73-64f62793c975",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "phgIAttB7EdXhB2O",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -144
+      ],
+      "id": "6adca356-09e1-4e25-b693-0d3a17dbd60a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        256,
+        -208
+      ],
+      "id": "65352722-70ad-4fbf-8050-0c3f07ecb346",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -144
+      ],
+      "id": "2cb96ad5-5895-4fac-9308-9e427788fa01"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Limitador": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Limitador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1e51d56c-df06-4f6e-b8b8-af5f9966d872",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f053cc4aef00dc4defb972abd6ea4c20fb83c596479105e50b47ea8df3331ac4"
+  },
+  "id": "JWIJUveNcuoCqmgE",
+  "tags": []
+}
