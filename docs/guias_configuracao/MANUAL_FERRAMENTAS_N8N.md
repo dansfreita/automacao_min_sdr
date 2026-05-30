@@ -53,11 +53,23 @@ Utilizamos o ator *Google Maps Scraper* do Apify para buscar informações e con
 
 ---
 
-## 3. Supabase via Nó do PostgreSQL (Banco de Dados / RAG)
+## 3. Supabase (Banco de Dados / RAG)
 
-O Supabase armazena a nossa base de dados. Nos fluxos deste projeto, nós não usamos o nó oficial "Supabase" do n8n, mas sim o nó nativo do **PostgreSQL**, pois ele permite escrever *Queries* (consultas SQL) diretamente no banco do Supabase, facilitando a manipulação e inserção da extensão vetorial.
+O Supabase armazena a nossa base de dados. Dependendo da parte do fluxo, você pode usar os nós comuns do próprio **Supabase** ou nós diretos de **PostgreSQL** (para consultas complexas e RAG). Abaixo estão as duas formas de conectar:
 
-**Como obter as credenciais:**
+### 3.1. Nós Comuns do Supabase (Data API)
+Se você estiver utilizando os nós oficiais do Supabase no n8n (para CRUD básico):
+1. Acesse o seu projeto no [Supabase](https://supabase.com/).
+2. No menu lateral, vá em **Project Settings** (engrenagem).
+3. Clique em **API** (ou *Data API*).
+4. Na seção *Project URL*, copie a sua **URL**.
+5. Em *Project API keys* (ou *legacy anon, service_role API keys*), copie a chave do tipo **service_role** (recomendado para automações backend) ou a chave *anon*.
+6. No n8n, crie a credencial do nó Supabase colando a URL e a API Key (Service Role) copiadas.
+
+### 3.2. Nó do PostgreSQL (Para Consultas SQL Diretas e RAG)
+Para buscas de similaridade vetorial (RAG) que precisam de queries complexas, usamos o nó nativo de PostgreSQL.
+
+**Como obter as credenciais (PostgreSQL):**
 1. Crie ou acesse seu projeto no [Supabase](https://supabase.com/).
 2. No painel inicial do seu projeto, clique no botão **Connect** na parte superior da tela.
 3. Clique em **ORM** e, em seguida, em **Configure ORM**.
