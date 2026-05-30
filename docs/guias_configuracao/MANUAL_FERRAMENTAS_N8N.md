@@ -32,7 +32,7 @@ O Gemini é o "cérebro" do agente SDR, responsável por redigir mensagens, extr
 2. Na seção **Credential to connect with**, clique no menu e selecione **Create New Credential**.
 3. Dê um nome (ex: `Minha Chave Gemini`) e cole a API Key no campo correspondente.
 4. Clique em **Save**.
-> 📺 **Vídeo Tutorial de Ajuda:** Se você tiver dúvidas de como criar credenciais da nuvem do Google (como OAuth2 para o Google Calendar ou Vertex), assista a este guia: [Configurando Credenciais Google para n8n](https://www.youtube.com/watch?v=FBGtpWMTppw&time_continue=0&embeds_referring_euri=https%3A%2F%2Fdocs.n8n.io%2F)
+> 📺 **Vídeo Tutorial de Ajuda:** Se você tiver dúvidas de como criar credenciais da nuvem do Google (como OAuth2 para o Google Calendar ou sheets), assista a este guia: [Configurando Credenciais Google para n8n](https://www.youtube.com/watch?v=FBGtpWMTppw&time_continue=0&embeds_referring_euri=https%3A%2F%2Fdocs.n8n.io%2F)
 
 ---
 
