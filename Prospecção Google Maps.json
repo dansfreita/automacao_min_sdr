@@ -1,0 +1,1993 @@
+{
+  "name": "Prospecção Google Maps",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.Telefone }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              },
+              "id": "12221ae1-20f0-43da-be09-3dff0da067a1"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -592,
+        64
+      ],
+      "id": "51ca88ce-3bcf-4bdb-b22e-3b8a9df3f874",
+      "name": "Tem Telefone?"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -992,
+        64
+      ],
+      "id": "7d31550b-ba94-4820-9ef1-37af380524d5",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        432,
+        64
+      ],
+      "id": "a089909e-c15b-478c-aa1b-1e3bcf1cd439"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7b8d6ef-8b56-4784-b8de-cb23a8872658",
+              "name": "Nome",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "5d676e88-bf47-4b48-973e-d0541e13a580",
+              "name": "Email",
+              "value": "={{ $json.emails[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "07d85d64-e1f6-4698-bf18-707f2ef4014b",
+              "name": "Telefone",
+              "value": "={{ $json.phoneUnformatted.replace('+', '').replace(/^(55\\d{2})9/, '$1') }}",
+              "type": "string"
+            },
+            {
+              "id": "1d81ecf1-4c9e-4b45-8bf9-dfa1b71ba5cf",
+              "name": "Site",
+              "value": "={{ $json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "73103386-fa10-409d-bc4f-5ee06ebeae70",
+              "name": "Endereço",
+              "value": "={{ $json.address }}",
+              "type": "string"
+            },
+            {
+              "id": "bd1b34ed-391c-4629-a63e-f42d1222a451",
+              "name": "Nicho",
+              "value": "={{ $json.categoryName }}",
+              "type": "string"
+            },
+            {
+              "id": "2e90eba8-b5e4-4921-8a4a-8b97319dc450",
+              "name": "Nota",
+              "value": "={{ $json.totalScore }}",
+              "type": "string"
+            },
+            {
+              "id": "9368b52c-e5e2-42b2-a889-2c69cce368fb",
+              "name": "instagram",
+              "value": "={{ $json.instagrams[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "45b0ae4d-3dc9-4fdb-b270-a6c154cc7c5e",
+              "name": "Avaliações",
+              "value": "={{ $json.reviewsCount }}",
+              "type": "string"
+            },
+            {
+              "id": "287cb397-69b3-4e99-be09-8dd6382acb3c",
+              "name": "pico_funcionamento",
+              "value": "={{ $json.openingHours.some(h => h.hours.includes('22:00') || h.hours.includes('23:00') || h.hours.includes('00:00')) ? 'Noturno' : 'Diurno' }}",
+              "type": "string"
+            },
+            {
+              "id": "e7eac1c3-b28e-470c-9862-f8ead46f6761",
+              "name": "ticket_medio",
+              "value": "={{ $json.price ? ($json.price.length > 2 ? 'Alto' : 'Normal') : 'Não informado' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -736,
+        48
+      ],
+      "id": "aba6a0a4-f189-4dcc-a203-044836e50372",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Você é um especialista em estratégia de negócios focado em ajudar donos de empresas do setor de {{ $json.Nicho }} a atrair CLIENTES DE ALTO VALOR e eliminar o TEMPO gasto com triagem manual e contatos desqualificados.\n\nSua comunicação é humana, profissional e usa a linguagem natural que o gestor ou dono desse nicho específico utiliza no dia a dia.\n\nEVITE jargões de marketing genéricos. Fale sobre os problemas reais do setor analisado (ex: gargalos de atendimento, custo de aquisição, sobrecarga do time, margem de lucro, conversão de curiosos em pagantes).\n\nSeu objetivo é analisar os dados abaixo e extrair a história não contada por trás dos números, como se você estivesse dentro da operação da empresa. O dono está sobrecarregado atendendo clientes de baixo ticket? A equipe perde horas no WhatsApp respondendo curiosos? O negócio tem alta reputação, mas falha em vender serviços premium?\n\nDados do Negócio:\nNome: {{ $json.Nome }}\nNicho/Especialidade: {{ $json.Nicho }}\nEndereço: {{ $json['Endereço'] }}\nSite: {{ $json.Site }}\nNota dos Clientes: {{ $json.Nota }}\nTotal de Avaliações: {{ $json['Avaliações'] }}\nPico de funcionamento: {{ $json.pico_funcionamento }}\nTicket médio: {{ $json.ticket_medio }}\n\nExecute estas duas tarefas e retorne a resposta EXCLUSIVAMENTE em formato JSON:\n\nobservacao_ia: Descreva a situação atual do negócio em uma frase simples e direta, como se estivesse fazendo um diagnóstico rápido para um sócio. Use a linguagem do nicho da empresa.\n\nExemplo 1 (Foco em gargalo de atendimento):\n“A empresa tem excelente reputação (Nota alta), mas a triagem manual de novos contatos deve estar fazendo a equipe perder tempo com clientes de baixo ticket, comprometendo a margem de lucro.”\n\nExemplo 2 (Foco em atração de valor):\n“Os clientes atuais estão muito satisfeitos com o serviço base, mas a atração de novos clientes para serviços mais lucrativos e complexos está baixa, o que freia a escala do negócio.”\n\nmensagem_personalizada: Crie uma única e curta mensagem de WhatsApp para iniciar uma prospecção ativa. O tom é profissional, direto e demonstra que você genuinamente estudou e entendeu a operação dele. \nA mensagem deve caber confortavelmente em uma única bolha de texto (lida em 5 segundos).\n\nUse variáveis randômicas de saudação natural (ex: Bom dia, Olá, Opa, Tudo bem?, Salve) e NUNCA termine a mensagem com a mesma frase de chamada para ação. Alterne entre perguntar a opinião dele, questionar como ele lida com a dor hoje, ou se faz sentido conversar.\n\nFormato de saída JSON obrigatório:\n{\n  \"observacao_ia\": \"Análise estratégica aqui\",\n  \"mensagem_personalizada\": \"Texto da mensagem aqui\"\n}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        16
+      ],
+      "id": "d86e6ce2-8b87-4210-87b1-4f02961251f0",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JlidnmRZF1e2B5vb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.content.parts[0].text.replace('```json', '').replace('```', '').trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77e07139-5534-4e08-882b-42a93b5f6928",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1408,
+        64
+      ],
+      "id": "d14ff0aa-9510-4484-8d6f-2355af6a8a7a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 425165927,
+          "mode": "list",
+          "cachedResultName": "Minerador",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ghZRIUmLJhGuIbavMtkmCRrlJk-hVjLxKbzhdnav7zA/edit#gid=425165927"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nome": "={{ $('Edit Fields').item.json.Nome }}",
+            "Telefone": "={{ $('Edit Fields').item.json.Telefone }}",
+            "Observação_ia": "={{ $json.observacao_ia }}",
+            "Mensagem_personalizada": "={{ $json.mensagem_personalizada }}",
+            "Email": "={{ $('Edit Fields').item.json.Email }}",
+            "Site": "={{ $('Edit Fields').item.json.Site }}",
+            "Endereço": "={{ $('Edit Fields').item.json['Endereço'] }}",
+            "Nicho": "={{ $('Edit Fields').item.json.Nicho }}",
+            "Nota": "={{ $('Edit Fields').item.json.Nota }}",
+            "instagram": "={{ $('Edit Fields').item.json.instagram }}",
+            "Avaliações": "={{ $('Edit Fields').item.json['Avaliações'] }}",
+            "ticket_medio": "={{ $('Edit Fields').item.json.ticket_medio }}",
+            "Status": "pendente"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Telefone",
+              "displayName": "Telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Site",
+              "displayName": "Site",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Endereço",
+              "displayName": "Endereço",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nicho",
+              "displayName": "Nicho",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nota",
+              "displayName": "Nota",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "instagram",
+              "displayName": "instagram",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Avaliações",
+              "displayName": "Avaliações",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ticket_medio",
+              "displayName": "ticket_medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Observação_ia",
+              "displayName": "Observação_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensagem_personalizada",
+              "displayName": "Mensagem_personalizada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "cde08076-2a3c-4bf4-88f0-ab40e5b24526",
+      "name": "Salvar no Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        16
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "A2FszOJp32KpKnID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorId": {
+          "__rl": true,
+          "value": "nwua9Gu5YrADL7ZDj",
+          "mode": "list",
+          "cachedResultName": "Google Maps Scraper (compass/crawler-google-places)",
+          "cachedResultUrl": "https://console.apify.com/actors/nwua9Gu5YrADL7ZDj/input"
+        },
+        "customBody": "{\n    \"searchStringsArray\": [\n        \"Contabilidade\"\n    ],\n    \"maxCrawledPlacesPerSearch\": 10,\n    \"language\": \"pt-BR\",\n    \"countryCode\": \"br\",\n    \"scrapeContacts\": true\n}"
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        64
+      ],
+      "id": "678801c1-b029-4776-a6db-d867f5165469",
+      "name": "Run an Actor and get dataset",
+      "credentials": {
+        "apifyApi": {
+          "id": "yp2K3ar7WddJ6MOV",
+          "name": "Apify account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Run an Actor and get dataset": [
+      {
+        "json": {
+          "title": "Contabilidade Andrade",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Assessoria contábil",
+          "address": "Av. Dr. Luís Boali Pôrto Salman, 382 - Centro, Teófilo Otoni - MG, 39802-000, Brasil",
+          "neighborhood": "Centro",
+          "street": "Av. Dr. Luís Boali Pôrto Salman, 382",
+          "city": "Teófilo Otoni",
+          "postalCode": "39802-000",
+          "state": "Minas Gerais",
+          "countryCode": "BR",
+          "website": "https://api.whatsapp.com/send?phone=5533987498703&text=Ol%C3%A1,%20vim%20pelo%20Google.",
+          "phone": "+55 33 3641-0623",
+          "phoneUnformatted": "+553336410623",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -17.8679951,
+            "lng": -41.5086222
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJPeRLsbN2swARPyneTCjxfB4",
+          "categories": [
+            "Assessoria contábil",
+            "Escritório de contabilidade",
+            "Serviço de escrituração contábil",
+            "Assessor fiscal"
+          ],
+          "fid": "0xb376b3b14be43d:0x1e7cf1284cde293f",
+          "cid": "2196895873640573247",
+          "reviewsCount": 30,
+          "imagesCount": 31,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "08:00 to 18:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Opções de serviço": [
+              {
+                "Serviços no local": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Contabilidade%20Andrade&query_place_id=ChIJPeRLsbN2swARPyneTCjxfB4",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 8,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAFt6HgEEQ0dJA_WSC10BjEHCI3ghhId5DAAMyktfu0TRzn6hKFnYcuKaK9ys8rfCPDk-MGB34MNHsfoUQ06Im4QBMr-1eEUakq3K0uTw9bCl0ILNIGzvDfY4CDQy-z5huudEFg=w408-h725-k-no",
+          "kgmid": "/g/1th5kpym",
+          "emails": [],
+          "phones": [],
+          "phonesUncertain": [
+            "+55 33 98749"
+          ],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [],
+          "facebooks": [
+            "https://www.facebook.com/brand"
+          ],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "whatsapp.com",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "MC Contabilidade",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Assessoria contábil",
+          "address": "R. Araquari, 459 - Municípios, Balneário Camboriú - SC, 88337-480, Brasil",
+          "neighborhood": "Municípios",
+          "street": "R. Araquari, 459",
+          "city": "Balneário Camboriú",
+          "postalCode": "88337-480",
+          "state": "Santa Catarina",
+          "countryCode": "BR",
+          "website": "https://mc.cnt.br/",
+          "phone": "+55 47 99977-9120",
+          "phoneUnformatted": "+5547999779120",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -27.007564,
+            "lng": -48.634087
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJ-6M4sXa22JQRs5WSe04YnuM",
+          "categories": [
+            "Assessoria contábil"
+          ],
+          "fid": "0x94d8b676b138a3fb:0xe39e184e7b9295b3",
+          "cid": "16401573618289644979",
+          "reviewsCount": 160,
+          "imagesCount": 17,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "08:00 to 12:00, 13:30 to 18:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "08:00 to 12:00, 13:30 to 18:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "08:00 to 12:00, 13:30 to 18:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "08:00 to 12:00, 13:30 to 18:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "08:00 to 12:00, 13:30 to 18:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Opções de serviço": [
+              {
+                "Serviços no local": true
+              },
+              {
+                "Agendamento on-line": false
+              }
+            ],
+            "Acessibilidade": [
+              {
+                "Entrada com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Estacionamento com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=MC%20Contabilidade&query_place_id=ChIJ-6M4sXa22JQRs5WSe04YnuM",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 7,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGffe_2yoOA01xL_ewPF51SEKBGo5eRBgpbIeNx-e7ZVP6AFcVSxs-qiZ2YS-gE8yyTnLDxD61TKD3KWhD4fDdkob2hodwGig6rJS15h2rez_UcRta5fcMgAjS8XJuQ0hNj2hE1QuQE5FXkf5_Uk2d2hmJw_cJScSm7SqgR-iiEwkcopFGOUf-4mAFtuTVj-YTE_Q=w408-h306-k-no",
+          "kgmid": "/g/1tggvnx1",
+          "emails": [
+            "marco@mc.cnt.br"
+          ],
+          "phones": [],
+          "phonesUncertain": [
+            "(47) 3368-3401",
+            "(47) 99688",
+            "(47) 99711",
+            "(47) 99977"
+          ],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [
+            "https://www.instagram.com/mccontabilidadebc"
+          ],
+          "facebooks": [
+            "https://www.facebook.com/mccontabilidadebc"
+          ],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "mc.cnt.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Divic's Contabilidade",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Escritório de contabilidade",
+          "address": "R. Dom Barreto, 397 - Centro, Sumaré - SP, 13170-004, Brasil",
+          "neighborhood": "Centro",
+          "street": "R. Dom Barreto, 397",
+          "city": "Sumaré",
+          "postalCode": "13170-004",
+          "state": "São Paulo",
+          "countryCode": "BR",
+          "website": "http://www.divicscontabilidade.com.br/site/",
+          "phone": "+55 19 3828-5865",
+          "phoneUnformatted": "+551938285865",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -22.825421,
+            "lng": -47.264935
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJw_0S6BK9yJQRIoHcFmCOKQw",
+          "categories": [
+            "Escritório de contabilidade"
+          ],
+          "fid": "0x94c8bd12e812fdc3:0xc298e6016dc8122",
+          "cid": "876388145851826466",
+          "reviewsCount": 110,
+          "imagesCount": 10,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "08:00 to 17:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Acessibilidade": [
+              {
+                "Entrada com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Estacionamento com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Divic's%20Contabilidade&query_place_id=ChIJw_0S6BK9yJQRIoHcFmCOKQw",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 10,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAF6UEaOeXzA0NXVw3o4WMuyU46F-UY54qWE7_F6pAn8LxNXV5FALegYj2VuTzhDNIRsHphZZTFhYhs9w6H7Fw08a8aFxZa0kNL15mJYRNL11WppSlkxUWx1s-z8qyE-lhxxVgzg=w426-h240-k-no",
+          "kgmid": "/g/11c57y3bxm",
+          "emails": [
+            "contato@divicscontabilidade.com.br"
+          ],
+          "phones": [
+            "+551938285865"
+          ],
+          "phonesUncertain": [
+            "(19) 3828-5865",
+            "3170-002",
+            "(19) 98452"
+          ],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [
+            "https://www.instagram.com/divicscontabilidade"
+          ],
+          "facebooks": [
+            "https://www.facebook.com/DivicsContabilidade"
+          ],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "divicscontabilidade.com.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "ABBA CONTABILIDADE",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Escritório de contabilidade",
+          "address": null,
+          "neighborhood": null,
+          "street": null,
+          "city": null,
+          "postalCode": null,
+          "state": null,
+          "countryCode": null,
+          "website": "http://www.abbacontabil.com.br/",
+          "phone": "+55 22 98814-0655",
+          "phoneUnformatted": "+5522988140655",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -21.5373087,
+            "lng": -42.2029554
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJE413CA48pWYRHBuxIbV71H0",
+          "categories": [
+            "Escritório de contabilidade",
+            "Contador(a) certificado(a)",
+            "Service establishment"
+          ],
+          "fid": "0x66a53c0e08778d13:0x7dd47bb521b11b1c",
+          "cid": "9067007967688203036",
+          "reviewsCount": 24,
+          "imagesCount": 68,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "Atendimento 24 horas"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "Atendimento 24 horas"
+            },
+            {
+              "day": "sábado",
+              "hours": "Atendimento 24 horas"
+            },
+            {
+              "day": "domingo",
+              "hours": "Atendimento 24 horas"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "Atendimento 24 horas"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "Atendimento 24 horas"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "Atendimento 24 horas"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Opções de serviço": [
+              {
+                "Português": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=ABBA%20CONTABILIDADE&query_place_id=ChIJE413CA48pWYRHBuxIbV71H0",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 5,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGm8SlzYQqPXQyDGCAg-vHNGQExNw_E-XCEEc4uXx0NBOfqm2w7OqKf2P4ItGKd99lgnvRu_D9TIE1ic5-2o31NbWnMdJYmPxca_os1lCcbXVGoT2xP_zfKTO26OivrPg8nEu5tUQvKv_Y=w408-h510-k-no",
+          "kgmid": "/g/11vsxp66m5",
+          "emails": [],
+          "phones": [],
+          "phonesUncertain": [],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [],
+          "facebooks": [],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Contabilizei Escritório de Contabilidade em São Paulo",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Escritório de contabilidade",
+          "address": "Av. Paulista, 1106 - 16º andar - Bela Vista, São Paulo - SP, 01418-100, Brasil",
+          "neighborhood": "Bela Vista",
+          "street": "Av. Paulista, 1106 - 16º andar",
+          "city": "São Paulo",
+          "postalCode": "01418-100",
+          "state": "São Paulo",
+          "countryCode": "BR",
+          "website": "https://www.contabilizei.com.br/?utm_source=google&utm_medium=organic&utm_campaign=GMBSaoPaulo",
+          "phone": "",
+          "phoneUnformatted": "",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -23.5641006,
+            "lng": -46.6525278
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 4.7,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJ__-_5MhZzpQRGP1WEYWY1wI",
+          "categories": [
+            "Escritório de contabilidade"
+          ],
+          "fid": "0x94ce59c8e4bfffff:0x2d798851156fd18",
+          "cid": "204800005357632792",
+          "reviewsCount": 5854,
+          "imagesCount": 9,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.161Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "09:00 to 22:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "09:00 to 22:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "09:00 to 22:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "09:00 to 22:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "09:00 to 22:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Da empresa": [
+              {
+                "Se identifica como uma empresa de empreendedoras": true
+              }
+            ],
+            "Acessibilidade": [
+              {
+                "Entrada com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Estacionamento com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Contabilizei%20Escrit%C3%B3rio%20de%20Contabilidade%20em%20S%C3%A3o%20Paulo&query_place_id=ChIJ__-_5MhZzpQRGP1WEYWY1wI",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 3,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAEOXYY8YvKeXKptcrJm15GbOY92nhynvvhEIO__mO8iTHu62tjmW7dgFAJlEkH8PNb2A26zHAYCIr3b8N4vDeWI19Vv2Tcow4_yGalCFuk43t5hpb6P6RR-Jph0vL4zcNDJ1BzC=w408-h272-k-no",
+          "kgmid": "/g/11g9qcgrn3",
+          "emails": [],
+          "phones": [],
+          "phonesUncertain": [],
+          "linkedIns": [
+            "https://www.linkedin.com/company/contabilizei"
+          ],
+          "twitters": [],
+          "instagrams": [
+            "https://www.instagram.com/contabilizei"
+          ],
+          "facebooks": [
+            "https://facebook.com/contabilizei",
+            "https://www.facebook.com/Contabilizei"
+          ],
+          "youtubes": [
+            "https://www.youtube.com/channel/UCNAlIbSjWxrDLDllQUug8dA"
+          ],
+          "tiktoks": [
+            "https://www.tiktok.com/@contabilizei"
+          ],
+          "pinterests": [],
+          "discords": [],
+          "domain": "contabilizei.com.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Brasil Contabilidade",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Escritório de contabilidade",
+          "address": "Av. Mal. Floriano Peixoto, 3006 - Parolin, Curitiba - PR, 80215-090, Brasil",
+          "neighborhood": "Parolin",
+          "street": "Av. Mal. Floriano Peixoto, 3006",
+          "city": "Curitiba",
+          "postalCode": "80215-090",
+          "state": "Paraná",
+          "countryCode": "BR",
+          "website": "https://brasilcont.com.br/",
+          "phone": "+55 41 3022-0732",
+          "phoneUnformatted": "+554130220732",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -25.4556086,
+            "lng": -49.260265
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJaU_kdSHZ_kYRH8OUFfzfV04",
+          "categories": [
+            "Escritório de contabilidade"
+          ],
+          "fid": "0x46fed92175e44f69:0x4e57dffc1594c31f",
+          "cid": "5645226931719029535",
+          "reviewsCount": 54,
+          "imagesCount": 22,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "08:00 to 18:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Da empresa": [
+              {
+                "Se identifica como uma empresa de empreendedoras": true
+              }
+            ],
+            "Acessibilidade": [
+              {
+                "Assento com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Banheiro com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ],
+            "Público": [
+              {
+                "Empresa que acolhe a comunidade LGBTQ+": true
+              },
+              {
+                "Espaço seguro para pessoas transgênero": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Brasil%20Contabilidade&query_place_id=ChIJaU_kdSHZ_kYRH8OUFfzfV04",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 4,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAG-hgYQ_dGIAwjWGF55LQp58JwjkYZVb5Of9hxciUJ3dXoT4za3QoxcyumVvWzIQinTbSEKkBKS91YNZ54ACs3KyGD9LEgn7dA17SUw24Cz6G6aM1ciMDFlTl7LyZlHNwA1DUY=w648-h240-k-no",
+          "kgmid": "/g/1tcvd12x",
+          "emails": [
+            "comercial@brasilcont.com.br"
+          ],
+          "phones": [],
+          "phonesUncertain": [
+            "(41) 3022 0732",
+            "9975-2388",
+            "0220-001",
+            "(41) 3022-0732"
+          ],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [
+            "https://www.instagram.com/brasil_contabilidade"
+          ],
+          "facebooks": [
+            "https://www.facebook.com/brasilcont.com.br"
+          ],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "brasilcont.com.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "CONTABILIDADE PORTO VELHO",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Assessoria contábil",
+          "address": "Rua Porto Velho, 724 - Jardim Cumbica, Guarulhos - SP, 07240-060, Brasil",
+          "neighborhood": "Jardim Cumbica",
+          "street": "Rua Porto Velho, 724",
+          "city": "Guarulhos",
+          "postalCode": "07240-060",
+          "state": "São Paulo",
+          "countryCode": "BR",
+          "website": "https://contabilportovelho.com.br/",
+          "phone": "+55 11 99920-9124",
+          "phoneUnformatted": "+5511999209124",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -23.4446581,
+            "lng": -46.4380742
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJw4SmThxjzpQRMZAJy7kxlo4",
+          "categories": [
+            "Assessoria contábil",
+            "Escritório de contabilidade",
+            "Consultoria empresarial",
+            "Perito em contabilidade",
+            "Assessoria de recursos humanos",
+            "Empresa de Software",
+            "Consultor de aposentadoria",
+            "Consultor fiscal",
+            "Declaração de impostos"
+          ],
+          "fid": "0x94ce631c4ea684c3:0x8e9631b9cb099031",
+          "cid": "10274454273937477681",
+          "reviewsCount": 36,
+          "imagesCount": 25,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "10:00 to 16:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "10:00 to 16:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "10:00 to 16:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "10:00 to 16:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "10:00 to 16:00"
+            }
+          ],
+          "additionalOpeningHours": {
+            "Horário para idosos": [
+              {
+                "day": "quinta-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "sexta-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "sábado",
+                "hours": "Fechado"
+              },
+              {
+                "day": "domingo",
+                "hours": "Fechado"
+              },
+              {
+                "day": "segunda-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "terça-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "quarta-feira",
+                "hours": "09:00–17:00"
+              }
+            ],
+            "Horário de atendimento on-line": [
+              {
+                "day": "quinta-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "sexta-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "sábado",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "domingo",
+                "hours": "Fechado"
+              },
+              {
+                "day": "segunda-feira",
+                "hours": "Fechado"
+              },
+              {
+                "day": "terça-feira",
+                "hours": "09:00–17:00"
+              },
+              {
+                "day": "quarta-feira",
+                "hours": "09:00–17:00"
+              }
+            ]
+          },
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Da empresa": [
+              {
+                "Se identifica como uma empresa de empreendedoras": true
+              }
+            ],
+            "Opções de serviço": [
+              {
+                "Serviços no local": true
+              },
+              {
+                "Português": true
+              }
+            ],
+            "Acessibilidade": [
+              {
+                "Entrada com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ],
+            "Público": [
+              {
+                "Empresa que acolhe a comunidade LGBTQ+": true
+              },
+              {
+                "Espaço seguro para pessoas transgênero": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=CONTABILIDADE%20PORTO%20VELHO&query_place_id=ChIJw4SmThxjzpQRMZAJy7kxlo4",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 9,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAE51gRtWCKSYheqdkYmbfETSyvjXXeoPkFZlrsuIrGVieLUNdzw805WtK-VW3v9EsJtTw1uYPGbCYIK9BASfqpuyzd-5FLktG6S8FFNRcdtEBcWGJkm9R734PTf0eVTY9hgAXSO=w408-h306-k-no",
+          "kgmid": "/g/11sfrncvz9",
+          "emails": [],
+          "phones": [],
+          "phonesUncertain": [],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [],
+          "facebooks": [],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Athena Contabilidade | Especialista Hortifruti | CEASA | Restaurante | Terraplenagem | Imposto de Renda | Abertura Empresa",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Assessoria contábil",
+          "address": "Av. Campos Sales, 532 - 5ºAndar - Sala 54 - Centro, Campinas - SP, 13010-081, Brasil",
+          "neighborhood": "Centro",
+          "street": "Av. Campos Sales, 532 - 5ºAndar - Sala 54",
+          "city": "Campinas",
+          "postalCode": "13010-081",
+          "state": "São Paulo",
+          "countryCode": "BR",
+          "website": "https://www.contabilidadeathena.com.br/",
+          "phone": "+55 19 3236-5036",
+          "phoneUnformatted": "+551932365036",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -22.9060696,
+            "lng": -47.0634184
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJw6BprLbIyJQRku8txumzHw4",
+          "categories": [
+            "Assessoria contábil",
+            "Perito em contabilidade",
+            "Contador(a) certificado(a)",
+            "Serviço de contabilidade de custos"
+          ],
+          "fid": "0x94c8c8b6ac69a0c3:0xe1fb3e9c62def92",
+          "cid": "1017729857442672530",
+          "reviewsCount": 67,
+          "imagesCount": 18,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.162Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "08:00 to 17:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "08:00 to 17:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Da empresa": [
+              {
+                "Se identifica como uma empresa de empreendedoras": true
+              }
+            ],
+            "Opções de serviço": [
+              {
+                "Serviços no local": true
+              },
+              {
+                "Agendamento on-line": false
+              }
+            ],
+            "Acessibilidade": [
+              {
+                "Assento com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Entrada com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ],
+            "Público": [
+              {
+                "Empresa que acolhe a comunidade LGBTQ+": true
+              },
+              {
+                "Espaço seguro para pessoas transgênero": true
+              }
+            ],
+            "Planejamento": [
+              {
+                "É recomendado marcar hora": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Athena%20Contabilidade%20%7C%20Especialista%20Hortifruti%20%7C%20CEASA%20%7C%20Restaurante%20%7C%20Terraplenagem%20%7C%20Imposto%20de%20Renda%20%7C%20Abertura%20Empresa&query_place_id=ChIJw6BprLbIyJQRku8txumzHw4",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 6,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHN9H2owZTfgD5n38zrkpys9sWannWbhMBHsL9pi4O8GUKM2yqcFPcLbu1RTlUcDgTQJN9hfi-dKEl2niI2q_J0V2n46e8FzDvTs4uApq-sNmvVNpGQQ4nbwoNyrlFG3i0jZVg_=w408-h306-k-no",
+          "kgmid": "/g/11bzs2r499",
+          "emails": [
+            "diretoria@contabilidadeathena.com.br"
+          ],
+          "phones": [
+            "+551932365036"
+          ],
+          "phonesUncertain": [
+            "(19) 3236-5036",
+            "(19) 99139",
+            "(19) 99637",
+            "3010-081"
+          ],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [
+            "https://www.instagram.com/contabilidade.athena"
+          ],
+          "facebooks": [],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "contabilidadeathena.com.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Dynamic Contabilidade",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Assessoria contábil",
+          "address": "R. Teófilo Otoní, 406 - Cajuru, Curitiba - PR, 82940-000, Brasil",
+          "neighborhood": "Cajuru",
+          "street": "R. Teófilo Otoní, 406",
+          "city": "Curitiba",
+          "postalCode": "82940-000",
+          "state": "Paraná",
+          "countryCode": "BR",
+          "website": "http://dynamiccontabilidade.com.br/",
+          "phone": "+55 41 3267-5165",
+          "phoneUnformatted": "+554132675165",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -25.4586035,
+            "lng": -49.2165072
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJweLFUkTl3JQR2LH2rGJ8_zE",
+          "categories": [
+            "Assessoria contábil"
+          ],
+          "fid": "0x94dce54452c5e2c1:0x31ff7c62acf6b1d8",
+          "cid": "3602734990170173912",
+          "reviewsCount": 520,
+          "imagesCount": 5,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.160Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "07:30 to 12:00, 13:00 to 18:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "07:30 to 12:00, 13:00 to 17:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "07:30 to 12:00, 13:00 to 18:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "07:30 to 12:00, 13:00 to 18:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "07:30 to 12:00, 13:00 to 18:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Opções de serviço": [
+              {
+                "Agendamento on-line": true
+              },
+              {
+                "Serviços no local": true
+              }
+            ],
+            "Acessibilidade": [
+              {
+                "Assento com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Banheiro com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Entrada com acessibilidade para pessoas em cadeira de rodas": true
+              },
+              {
+                "Estacionamento com acessibilidade para pessoas em cadeira de rodas": true
+              }
+            ],
+            "Planejamento": [
+              {
+                "É recomendado marcar hora": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Dynamic%20Contabilidade&query_place_id=ChIJweLFUkTl3JQR2LH2rGJ8_zE",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 1,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGfcpbJLZ8zQYT0KMJcfmaoZrGpGkpgtZz4Xfkd2iRB3nOsjpuUBZ8_YNDld1E0qpB4zsKTcjsVCRCvcqdxmnLdwh2hl9bO_UMHqOh-zbqIHRjz5hHVdoNdTAVebrm590oXUqUnmw=w408-h544-k-no",
+          "kgmid": "/g/1tmplnfn",
+          "emails": [
+            "%20dynamic@dynamiccontabilidade.com.br",
+            "dynamic@dynamiccontabilidade.com.br"
+          ],
+          "phones": [],
+          "phonesUncertain": [
+            "41-3267-5165",
+            "41-98889",
+            "2940-000"
+          ],
+          "linkedIns": [
+            "https://www.linkedin.com/company/dynamic-contabilidade"
+          ],
+          "twitters": [],
+          "instagrams": [
+            "https://www.instagram.com/dynamic_contabilidade"
+          ],
+          "facebooks": [
+            "https://www.facebook.com/dynamiccontabil"
+          ],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "dynamiccontabilidade.com.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Jovic Contabilidade",
+          "subTitle": null,
+          "description": null,
+          "price": null,
+          "categoryName": "Assessoria contábil",
+          "address": "Ed. Argental Drumond - R. Getúlio Vargas, 23 - Sala 1 - Centro, Guarapari - ES, 29200-180, Brasil",
+          "neighborhood": "Centro",
+          "street": "Ed. Argental Drumond - R. Getúlio Vargas, 23 - Sala 1",
+          "city": "Guarapari",
+          "postalCode": "29200-180",
+          "state": "Espírito Santo",
+          "countryCode": "BR",
+          "website": "http://www.joviccontabilidade.com.br/",
+          "phone": "+55 27 98843-3273",
+          "phoneUnformatted": "+5527988433273",
+          "claimThisBusiness": false,
+          "location": {
+            "lat": -20.668027,
+            "lng": -40.4968976
+          },
+          "locatedIn": null,
+          "floor": null,
+          "plusCode": null,
+          "menu": null,
+          "servicesLink": null,
+          "totalScore": 5,
+          "permanentlyClosed": false,
+          "temporarilyClosed": false,
+          "placeId": "ChIJL_Cbr7xXuAAR5WZpumIGYkE",
+          "categories": [
+            "Assessoria contábil"
+          ],
+          "fid": "0xb857bcaf9bf02f:0x41620662ba6966e5",
+          "cid": "4711335181286991589",
+          "reviewsCount": 103,
+          "imagesCount": 10,
+          "imageCategories": [],
+          "scrapedAt": "2026-05-28T21:30:31.161Z",
+          "reserveTableUrl": null,
+          "googleFoodUrl": null,
+          "hotelStars": null,
+          "hotelDescription": null,
+          "checkInDate": null,
+          "checkOutDate": null,
+          "hotelAds": [],
+          "popularTimesLiveText": null,
+          "popularTimesLivePercent": null,
+          "popularTimesHistogram": {},
+          "openingHours": [
+            {
+              "day": "quinta-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "sexta-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "sábado",
+              "hours": "Fechado"
+            },
+            {
+              "day": "domingo",
+              "hours": "Fechado"
+            },
+            {
+              "day": "segunda-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "terça-feira",
+              "hours": "08:00 to 18:00"
+            },
+            {
+              "day": "quarta-feira",
+              "hours": "08:00 to 18:00"
+            }
+          ],
+          "peopleAlsoSearch": [],
+          "placesTags": [],
+          "reviewsTags": [],
+          "additionalInfo": {
+            "Opções de serviço": [
+              {
+                "Agendamento on-line": true
+              },
+              {
+                "Serviços no local": true
+              }
+            ],
+            "Público": [
+              {
+                "Empresa que acolhe a comunidade LGBTQ+": true
+              },
+              {
+                "Espaço seguro para pessoas transgênero": true
+              }
+            ],
+            "Planejamento": [
+              {
+                "É recomendado marcar hora": true
+              }
+            ]
+          },
+          "gasPrices": [],
+          "url": "https://www.google.com/maps/search/?api=1&query=Jovic%20Contabilidade&query_place_id=ChIJL_Cbr7xXuAAR5WZpumIGYkE",
+          "searchPageUrl": "https://www.google.com/maps/search/Contabilidade/@-20.67543155136765,-28.915899559462982,13z?hl=pt-BR",
+          "searchString": "Contabilidade",
+          "language": "pt-BR",
+          "rank": 2,
+          "isAdvertisement": false,
+          "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAFXuEsLfxLhjMG9e3No6RmAly2s3Jv4niopi6Rj6bInJ5vTWGfVcw9oL1ZSMdG_Pp1Bl0Vt7qQzee6LxEpVoitm17h42NWM6jjTDXJW2AEDmxHVi1jBOjcNv6GwAi1W0EtAf7RM=w408-h409-k-no",
+          "kgmid": "/g/1tlvqsb1",
+          "emails": [
+            "executivo@joviccontabilidade.com.br"
+          ],
+          "phones": [],
+          "phonesUncertain": [
+            "1764078722",
+            "15-06-2026",
+            "+29200180",
+            "29200180",
+            "(27) 3362-3161",
+            "27988433273"
+          ],
+          "linkedIns": [],
+          "twitters": [],
+          "instagrams": [],
+          "facebooks": [
+            "https://www.facebook.com/WordPresscom"
+          ],
+          "youtubes": [],
+          "tiktoks": [],
+          "pinterests": [],
+          "discords": [],
+          "domain": "joviccontabilidade.com.br",
+          "leadsEnrichment": []
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Tem Telefone?": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Tem Telefone?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Salvar no Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Run an Actor and get dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar no Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run an Actor and get dataset": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c174d6a8-c9e9-4e1e-932b-f6622ce79c68",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bb33496c3ade17c629fe08012b8818a0a90d9a609e2e623f74cd4eec241a5522"
+  },
+  "id": "UCZhqgoQ4cx6y8GN",
+  "tags": []
+}
