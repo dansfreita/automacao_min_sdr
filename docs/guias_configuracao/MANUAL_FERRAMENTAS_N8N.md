@@ -73,6 +73,57 @@ O Supabase armazena a nossa base de dados. Nos fluxos deste projeto, nós não u
    - **Port:** Geralmente `5432` ou `6543`.
 4. Clique em **Save** para finalizar. 
 
+**Como criar a Tabela e Função de Busca Vetorial (RAG):**
+Para que o seu agente SDR (baseado no Gemini) consiga buscar informações de contexto através de similaridade semântica, precisamos preparar o banco do Supabase para suportar vetores com a exata dimensão que a IA do Google gera (3072 dimensões).
+Siga este passo a passo:
+1. Abra o painel do seu projeto no **Supabase**.
+2. No menu lateral esquerdo, clique em **SQL Editor**.
+3. Clique em **New Query** e cole exatamente o script abaixo no editor de texto:
+
+```sql
+-- 1. Habilita a extensão pgvector
+create extension if not exists vector with schema extensions;
+
+-- 2. Cria a tabela com a dimensão do Gemini (3072)
+create table documents (
+  id bigserial primary key,
+  content text, 
+  metadata jsonb, 
+  embedding extensions.vector(3072) -- Ajustado de 1536 para 3072 (Padrão Gemini)
+);
+
+-- 3. Função de busca ajustada para 3072 dimensões
+create or replace function match_documents (
+  query_embedding extensions.vector(3072), -- Ajustado aqui também
+  match_count int default null,
+  filter jsonb DEFAULT '{}'
+) returns table (
+  id bigint,
+  content text,
+  metadata jsonb,
+  similarity float
+)
+language plpgsql
+as $$
+#variable_conflict use_column
+begin
+  return query
+  select
+    documents.id,
+    documents.content,
+    documents.metadata,
+    1 - (documents.embedding <=> query_embedding) as similarity
+  from documents
+  where metadata @> filter
+  order by documents.embedding <=> query_embedding
+  limit match_count;
+end;
+$$;
+```
+4. Clique no botão verde **Run** (ou pressione `Cmd+Enter` / `Ctrl+Enter`).
+Pronto! Com isso o seu banco está preparado e já inclui a função `match_documents` que o n8n vai acionar.
+
+
 ---
 
 ## 4. Redis Cloud (Buffer e Memória de Curto Prazo)
