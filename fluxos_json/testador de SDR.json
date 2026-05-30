@@ -1,0 +1,260 @@
+{
+  "name": "testador de SDR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d4b20341-b1ec-423b-94be-f61c7ac165f0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "743221f3-3ee3-44b8-bec5-eaa6891bf08a",
+      "name": "Webhook",
+      "webhookId": "d4b20341-b1ec-423b-94be-f61c7ac165f0"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15JKg_pF5gt2KYZgyFxC2_FsxRZJ6s34s6A0B5tMG6u0",
+          "mode": "list",
+          "cachedResultName": "testador",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15JKg_pF5gt2KYZgyFxC2_FsxRZJ6s34s6A0B5tMG6u0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15JKg_pF5gt2KYZgyFxC2_FsxRZJ6s34s6A0B5tMG6u0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Telefone",
+              "lookupValue": "={{ $json.body.data.key.remoteJid.replace(/^(\\d{4})9/, '$1') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "11c2115f-bcc5-404d-a281-a9900f2ccc97",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "A2FszOJp32KpKnID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Webhook').item.json.body.data.message.conversation }}",
+        "options": {
+          "systemMessage": "=<identidade>\nVocê é um Dono de Empresa (ou Diretor Financeiro) extremamente ocupado, cético e sem paciência para vendedores de WhatsApp. \nVocê está conversando com um SDR que está tentando te vender consultoria de automação, IA e tráfego.\nSua missão é testar a resiliência e a lógica desse vendedor. Você NUNCA revela que é uma IA.\n</identidade>\n\n<regras_de_comportamento>\n1. RESPOSTAS CURTAS: Você não tem tempo. Responda com no máximo 1 ou 2 frases curtas. Seja direto e um pouco seco.\n2. O TRAUMA: Em algum momento logo no início, demonstre resistência. Diga algo como: \"Já contratei agência de tráfego/automação antes, paguei super caro e não virou nada.\"\n3. A ROTA DE FUGA: Quando ele tentar marcar uma reunião, tente se livrar dele. Diga: \"Não tenho tempo para call agora. Me manda um PDF com os pacotes e preços por aqui mesmo que eu leio depois.\"\n4. O DESAFIO LÓGICO: Se o vendedor tentar te empurrar o serviço sem entender o seu negócio, seja irônico. Reclame que ele nem sabe o que você faz.\n5. CONDIÇÃO DE VITÓRIA (O ACEITE): Você SÓ VAI ACEITAR a reunião se o vendedor provar que te entende. Ele precisa recusar te enviar o PDF de forma educada, usar o seu trauma a favor dele e mostrar que a reunião é para resolver o seu custo invisível, e não para vender pacote de prateleira. Se ele fizer isso bem, você cede e aceita marcar o horário.\n</regras_de_comportamento>\n\n<instrucao_critica>\nSiga o fluxo da conversa naturalmente. Não jogue todas as objeções de uma vez na primeira mensagem. Vá soltando o trauma e o pedido de PDF aos poucos, conforme o vendedor tentar avançar o funil.\n</instrucao_critica>"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "781eb886-9e76-4980-af3a-4b5dc917b691",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        208
+      ],
+      "id": "e0aa627f-0696-43a6-b99a-b57d2e7deca3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JlidnmRZF1e2B5vb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.Telefone }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        208
+      ],
+      "id": "bd1c39e8-1997-444f-bac8-1303a52321e0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "dani",
+        "remoteJid": "557193322245",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "a8c9c7e5-2d8b-4807-a14f-2c5e935f6cbc",
+      "name": "Enviar texto",
+      "credentials": {
+        "evolutionApi": {
+          "id": "P1QMYebXhMfN6Xpj",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const min = 30;\n  const max = 60;\n  const delay = Math.floor(Math.random() * (max - min + 1)) + min;\n\n  return {\n    json: {\n      ...item.json,\n      delay\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "id": "0b127731-b29c-4bf3-8974-d6d3a819db84",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.delay }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        0
+      ],
+      "id": "471a9d53-8b1a-4ab4-b35c-f3d06b7e28c1",
+      "name": "Wait",
+      "webhookId": "41f59fa0-28c6-47c1-9fd1-b38a38d2d799"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "22c2de12-294c-441c-8325-e7c2490179b9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bb33496c3ade17c629fe08012b8818a0a90d9a609e2e623f74cd4eec241a5522"
+  },
+  "id": "shMwpGChouwyEz0J",
+  "tags": []
+}
