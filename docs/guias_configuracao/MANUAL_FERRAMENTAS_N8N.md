@@ -58,12 +58,11 @@ Utilizamos o ator *Google Maps Scraper* do Apify para buscar informações e con
 O Supabase armazena a nossa base de dados. Dependendo da parte do fluxo, você pode usar os nós comuns do próprio **Supabase** ou nós diretos de **PostgreSQL** (para consultas complexas e RAG). Abaixo estão as duas formas de conectar:
 
 ### 3.1. Nós Comuns do Supabase (Data API)
-Se você estiver utilizando os nós oficiais do Supabase no n8n (para CRUD básico):
 1. Acesse o seu projeto no [Supabase](https://supabase.com/).
 2. No menu lateral, vá em **Project Settings** (engrenagem).
 3. Clique em **API** (ou *Data API*).
 4. Na seção *Project URL*, copie a sua **URL**.
-5. Em *Project API keys* (ou *legacy anon, service_role API keys*), copie a chave do tipo **service_role** (recomendado para automações backend) ou a chave *anon*.
+5. Em *Project API keys* (ou *legacy anon, service_role API keys*), copie a chave do tipo **service_role** 
 6. No n8n, crie a credencial do nó Supabase colando a URL e a API Key (Service Role) copiadas.
 
 ### 3.2. Nó do PostgreSQL (Para Consultas SQL Diretas e RAG)
