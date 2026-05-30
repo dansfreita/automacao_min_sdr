@@ -12,7 +12,7 @@ Os fluxos utilizam integrações criadas pela comunidade (Apify e Evolution API)
 1. Abra o seu n8n. No menu lateral esquerdo, clique em **Settings** (Configurações).
 2. No menu de configurações, vá até a aba **Community Nodes**.
 3. Clique em **Install a community node**.
-4. **Para a Evolution API:** No campo "npm Package Name", digite `n8n-nodes-evolution-api` (ou o nome específico do pacote que você utiliza) e clique em **Install**.
+4. **Para a Evolution API:** No campo "npm Package Name", digite `n8n-nodes-evolution-api` e clique em **Install**.
 5. **Para o Apify:** Repita o processo, digite `n8n-nodes-apify` e clique em **Install**.
 6. Após a instalação de ambos, concorde com os termos de segurança e aguarde. Recomendamos recarregar a aba do navegador ao final.
 
