@@ -59,8 +59,11 @@ O Supabase armazena a nossa base de dados. Nos fluxos deste projeto, nós não u
 
 **Como obter as credenciais:**
 1. Crie ou acesse seu projeto no [Supabase](https://supabase.com/).
-2. No menu lateral do seu projeto, vá até a engrenagem **Project Settings** e depois clique em **Database**.
-3. Na seção *Connection Parameters*, desmarque a opção "Use connection pooling" (se quiser a URL direta) ou utilize a porta `6543` para pooler. Você verá os dados: Host, Database Name, Port, User e Password.
+2. No painel inicial do seu projeto, clique no botão **Connect** na parte superior da tela.
+3. Clique em **ORM** e, em seguida, em **Configure ORM**.
+4. Você verá uma string de conexão `DATABASE_URL` parecida com esta:
+   `postgresql://postgres.[sua-ref-aqui]:[SUA-SENHA]@aws-0-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true`
+5. Desta string, extraia as informações necessárias: o **Host** (tudo após o `@` e antes de `:6543`), a **Porta** (`6543`), o **User** (`postgres.[sua-ref-aqui]`) e o **Database Name** (`postgres`).
 
 **Como conectar no n8n (Nos fluxos):**
 1. Procure pelos nós do tipo **PostgreSQL** nos seus fluxos importados (eles farão os `SELECT` ou `INSERT`).
@@ -128,7 +131,7 @@ Pronto! Com isso o seu banco está preparado e já inclui a função `match_docu
 
 ## 4. Redis Cloud (Buffer e Memória de Curto Prazo)
 
-O Redis impede que o agente envie 10 mensagens simultâneas e acabe bloqueando a sua instância de WhatsApp por spam.
+O Redis funciona **acumulando as mensagens recebidas**. Como pode ser observado no fluxo *Prospector RAG*, quando um lead envia várias mensagens curtas seguidas (algo comum no WhatsApp), o Redis armazena temporariamente esse histórico e o consolida. Assim, ele entrega o contexto completo para a inteligência artificial interpretar de uma só vez, impedindo que o agente responda cada frase individualmente e evitando bloqueios por spam.
 
 **Como obter as credenciais:**
 1. Acesse o [Redis Enterprise Cloud](https://redis.com/try-free/) e crie uma Database gratuita.
