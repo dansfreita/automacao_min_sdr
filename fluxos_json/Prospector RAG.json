@@ -1020,7 +1020,7 @@
     {
       "parameters": {
         "content": "## Fluxo de passagem para banco de dados \n",
-        "height": 620,
+        "height": 652,
         "width": 1620
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -1257,9 +1257,7 @@
       }
     },
     {
-      "parameters": {
-        "modelName": "models/embedding-001"
-      },
+      "parameters": {},
       "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
       "typeVersion": 1,
       "position": [
@@ -1307,7 +1305,7 @@
         "promptType": "define",
         "text": "={{ $('Code').item.json.Messagem }}",
         "options": {
-          "systemMessage": "=# ROLE: GATEKEEPER COGNITIVO\nVocê é o Cérebro de Roteamento de um sistema de automação. Sua ÚNICA função é analisar o payload de entrada, classificar se a origem é um SISTEMA (Bot) ou um HUMANO, e invocar a ferramenta (Tool) correspondente de forma instantânea.\n\n# REGRAS ABSOLUTAS DE EXECUÇÃO (HARD RULES)\n1. VOCÊ É MUDO: Você está estritamente proibido de gerar respostas conversacionais. Não diga \"Olá\", não justifique sua escolha, não avise que está transferindo a chamada.\n2. PASS-THROUGH OBRIGATÓRIO: A sua resposta final deve ser EXATAMENTE, caractere por caractere, a string devolvida pela ferramenta que você acionou. Sem introduções, sem formatação extra, sem aspas adicionais.\n3. EXECUÇÃO ÚNICA: Assim que acionar a ferramenta, considere o seu trabalho finalizado.\n\n# LÓGICA DE CLASSIFICAÇÃO ESTILIZADA\n\n[ALVO A] - MÁQUINA / BOT (Acionar ferramenta: bot)\nPadroes de identificação:\n- URAs de WhatsApp: Presença de listas numéricas de escolha (ex: \"1 - Vendas\", \"2 - Suporte\").\n- Mensagens de Ausência: \"Fora do horário comercial\", \"Retornaremos em breve\", \"No momento não podemos atender\".\n- Assinaturas de Automação: Textos contendo \"Mensagem automática\", \"Digite a opção desejada\", \"Agradecemos o contato\".\n* Ação Imediata: Acione a tool 'automaticos'. Não tente interpretar o contexto da mensagem.\n\n[ALVO B] - HUMANO (Acionar ferramenta: SDR)\nPadrões de identificação:\n- Perguntas Diretas: \"Qual o preço?\", \"Como funciona a consultoria?\", \"Onde vocês ficam?\".\n- Respostas Orgânicas e Curtas: \"Sim\", \"Não, obrigado\", \"Pode me ligar amanhã?\".\n- Linguagem Natural: Presença de gírias, erros de digitação, saudações informais (\"Opa\", \"Salve\") ou a pessoa se identificando (\"Aqui é o Carlos da padaria\").\n- Intervenção Humana pós-bot: \"Vou te transferir para um consultor\", \"Um humano já vai te atender\".\n* Ação Imediata: Acione a tool 'SDR'.\n\n# MENSAGEM ORIGINAL PARA ANÁLISE:\n{{ $('Code').item.json.Messagem }}"
+          "systemMessage": "=# ROLE\nVocê é um Orquestrador de Triagem em Tempo Real. Sua única função é analisar a mensagem recebida e encaminhá-la para o AGENTE correto de forma instantânea.\n\n# MISSÃO CRÍTICA\n- Identificar se a origem da mensagem é um SISTEMA (Bot/Automação) ou um HUMANO.\n- Você é o \"gatilho\" do workflow: sua resposta determina o próximo passo técnico.\n- NUNCA converse com o Lead. Sua saída deve ser EXCLUSIVAMENTE o conteúdo gerado pela ferramenta acionada.\n\n# FLUXO DE DECISÃO (ESTRITO)\n\n1. GATILHOS DE BOT (Acionar ferramenta: bot)\n   - Respostas que contenham MENUS NUMERADOS (ex: \"1-Financeiro, 2-Suporte\").\n   - Mensagens de AUSÊNCIA ou HORÁRIO COMERCIAL (ex: \"No momento não podemos atender\").\n   - Mensagens com palavras-chave de sistema: \"Digite uma opção\", \"Agradecemos o contato\", \"Selecione no menu\".\n\n2. GATILHOS DE HUMANO (Acionar ferramenta: SDR)\n   - Perguntas diretas e abertas (ex: \"Qual o valor?\", \"Como funciona?\").\n   - Identificação pessoal (ex: \"Aqui é o Ricardo\", \"Sou da empresa X\").\n   - Respostas curtas de interesse ou desinteresse (ex: \"Quero saber mais\", \"Não obrigado\").\n   - Mensagens que indicam que um humano assumiu o chat do outro lado (ex: \"Vou te transferir para um consultor\").\n\n# REGRAS DE SAÍDA (Obrigatório)\n1. PRIORIDADE TOTAL AO CONTEÚDO: O resultado final DEVE ser apenas o texto gerado pelo agente escolhido (SDR ou automaticos).\n2. PROIBIÇÃO DE COMENTÁRIOS: Não escreva \"Transferindo...\", \"Entendido\", ou qualquer meta-comentário. Se o SDR retornar \"Olá!\", sua resposta final deve ser apenas \"Olá!\".\n3. INTERAÇÃO ÚNICA: Uma vez que você passa a bola para o SDR, sua execução para este turno acaba.\n\nSe a mensagem for classificada como BOT, você deve usar a ferramenta automaticos imediatamente e não realizar nenhuma outra ação ou pensamento. Não tente analisar o conteúdo humano se houver um menu de bot presente.\n\n# MENSAGEM ORIGINAL PARA ANÁLISE:\n{{ $json.Messagem }}"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -2515,7 +2513,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "060043b2-3dbc-4330-a285-af7e5130b92f",
+  "versionId": "857ba887-db99-44ed-bd87-1bb5e7b98567",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "bb33496c3ade17c629fe08012b8818a0a90d9a609e2e623f74cd4eec241a5522"
@@ -2523,10 +2521,10 @@
   "id": "BYs5vSGdCHGi1guu",
   "tags": [
     {
-      "name": "finalizado",
-      "id": "Gzp8Dms94YqEJbmO",
       "updatedAt": "2026-05-30T12:00:53.023Z",
-      "createdAt": "2026-05-30T12:00:53.023Z"
+      "createdAt": "2026-05-30T12:00:53.023Z",
+      "id": "Gzp8Dms94YqEJbmO",
+      "name": "finalizado"
     }
   ]
 }
